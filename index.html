@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b6b'><circle cx='12' cy='12' r='10'/><path d='M12 2v4M12 18v4M2 12h4M18 12h4' stroke='%23ffffff' stroke-width='2'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --primary-hover: #ff5252;
+            --secondary: #4ecdc4;
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: #a0a0c0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .mode-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mode-tag.break {
+            background: rgba(78, 205, 196, 0.15);
+            color: var(--secondary);
+        }
+
+        .timer-display {
+            font-size: 5.5rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            margin: 1rem 0 2rem;
+            background: linear-gradient(to bottom, #fff, #a0a0c0);
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: white;
+        }
+
+        .btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-pause {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-pause:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: rgba(255, 82, 82, 0.1);
+            color: #ff5252;
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 82, 82, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .presets {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-preset {
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-preset:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-preset.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
+        }
+
+        .settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding-top: 1.8rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .setting-group {
+            text-align: left;
+        }
+
+        .setting-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .setting-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.03);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .timer-running .timer-display {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Background Glow */
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(78, 205, 196, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow" style="top: 10%; left: 10%;"></div>
+    <div class="glow" style="bottom: 10%; right: 10%;"></div>
+
+    <div class="glass-card fade-in" id="app">
+        <div class="mode-tag" id="mode-tag">
+            <svg id="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></svg>
+            <span id="mode-text">Work Session</span>
+        </div>
+
+        <div class="timer-display" id="timer">25:00</div>
+
+        <div class="presets">
+            <button class="btn-preset" data-min="15">15 min</button>
+            <button class="btn-preset active" data-min="25">25 min</button>
+            <button class="btn-preset" data-min="50">50 min</button>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="start-pause-btn">
+                <svg id="start-pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"></svg>
+                <span id="start-pause-text">Start</span>
+            </button>
+            <button class="btn btn-danger" id="reset-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                </svg>
+                Reset
+            </button>
+        </div>
+
+        <div class="settings">
+            <div class="setting-group">
+                <label>Work Duration</label>
+                <input type="number" id="work-input" value="25" min="1" class="setting-input">
+            </div>
+            <div class="setting-group">
+                <label>Break Duration</label>
+                <input type="number" id="break-input" value="5" min="1" class="setting-input">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Icons
+        const icons = {
+            play: '<polygon points="5 3 19 12 5 21 5 3"></polygon>',
+            pause: '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>',
+            focus: '<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle>',
+            coffee: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>'
+        };
+
+        // State
+        let workMinutes = 25;
+        let breakMinutes = 5;
+        let secondsLeft = workMinutes * 60;
+        let isRunning = false;
+        let mode = 'Work';
+        let timerId = null;
+
+        // Elements
+        const timerDisplay = document.getElementById('timer');
+        const modeTag = document.getElementById('mode-tag');
+        const modeText = document.getElementById('mode-text');
+        const modeIcon = document.getElementById('mode-icon');
+        const startPauseBtn = document.getElementById('start-pause-btn');
+        const startPauseText = document.getElementById('start-pause-text');
+        const startPauseIcon = document.getElementById('start-pause-icon');
+        const resetBtn = document.getElementById('reset-btn');
+        const workInput = document.getElementById('work-input');
+        const breakInput = document.getElementById('break-input');
+        const appCard = document.getElementById('app');
+        const presetBtns = document.querySelectorAll('.btn-preset');
+
+        function updateDisplay() {
+            const mins = Math.floor(secondsLeft / 60);
+            const secs = secondsLeft % 60;
+            timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+            // Update mode UI
+            if (mode === 'Work') {
+                modeTag.classList.remove('break');
+                modeText.textContent = 'Work Session';
+                modeIcon.innerHTML = icons.focus;
+            } else {
+                modeTag.classList.add('break');
+                modeText.textContent = 'Break Time';
+                modeIcon.innerHTML = icons.coffee;
+            }
+
+            // Update button UI
+            if (isRunning) {
+                startPauseBtn.className = 'btn btn-pause';
+                startPauseText.textContent = 'Pause';
+                startPauseIcon.innerHTML = icons.pause;
+                appCard.classList.add('timer-running');
+            } else {
+                startPauseBtn.className = 'btn btn-primary';
+                startPauseText.textContent = 'Start';
+                startPauseIcon.innerHTML = icons.play;
+                appCard.classList.remove('timer-running');
+            }
+        }
+
+        function playNotification() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const now = context.currentTime;
+
+            function playNote(freq, start, duration) {
+                const osc = context.createOscillator();
+                const g = context.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, start);
+                osc.connect(g);
+                g.connect(context.destination);
+
+                g.gain.setValueAtTime(0, start);
+                g.gain.linearRampToValueAtTime(0.2, start + 0.1);
+                g.gain.exponentialRampToValueAtTime(0.01, start + duration);
+
+                osc.start(start);
+                osc.stop(start + duration);
+            }
+
+            // A pleasant three-note sequence
+            playNote(523.25, now, 0.6); // C5
+            playNote(659.25, now + 0.15, 0.6); // E5
+            playNote(783.99, now + 0.3, 0.8); // G5
+        }
+
+
+        function toggleTimer() {
+            isRunning = !isRunning;
+            if (isRunning) {
+                timerId = setInterval(() => {
+                    secondsLeft--;
+                    if (secondsLeft < 0) {
+                        mode = mode === 'Work' ? 'Break' : 'Work';
+                        secondsLeft = (mode === 'Work' ? workMinutes : breakMinutes) * 60;
+                        playNotification();
+                    }
+                    updateDisplay();
+                }, 1000);
+            } else {
+                clearInterval(timerId);
+            }
+            updateDisplay();
+        }
+
+        function resetTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            mode = 'Work';
+            secondsLeft = workMinutes * 60;
+            updateDisplay();
+        }
+
+        // Event Listeners
+        startPauseBtn.addEventListener('click', toggleTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        workInput.addEventListener('input', (e) => {
+            workMinutes = Math.max(1, parseInt(e.target.value) || 1);
+            if (mode === 'Work' && !isRunning) {
+                secondsLeft = workMinutes * 60;
+                updateDisplay();
+            }
+        });
+
+        breakInput.addEventListener('input', (e) => {
+            breakMinutes = Math.max(1, parseInt(e.target.value) || 1);
+            if (mode === 'Break' && !isRunning) {
+                secondsLeft = breakMinutes * 60;
+                updateDisplay();
+            }
+        });
+
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mins = parseInt(btn.dataset.min);
+                workMinutes = mins;
+                workInput.value = mins;
+                resetTimer();
+
+                presetBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+
+</html>
