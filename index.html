@@ -3,9 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b6b'><circle cx='12' cy='12' r='10'/><path d='M12 2v4M12 18v4M2 12h4M18 12h4' stroke='%23ffffff' stroke-width='2'/></svg>">
+    <title>Inner Peace</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -57,24 +59,18 @@
         }
 
         .mode-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 99px;
-            background: rgba(255, 107, 107, 0.15);
-            color: var(--primary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.8rem;
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
         }
 
-        .mode-tag.break {
-            background: rgba(78, 205, 196, 0.15);
-            color: var(--secondary);
+        .mode-tag img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 50%;
+            mix-blend-mode: lighten;
+            opacity: 0.85;
+            filter: grayscale(0.2);
         }
 
         .timer-display {
@@ -273,9 +269,7 @@
 
     <div class="glass-card fade-in" id="app">
         <div class="mode-tag" id="mode-tag">
-            <svg id="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"></svg>
-            <span id="mode-text">Work Session</span>
+            <img src="favicon.png" alt="Inner Peace">
         </div>
 
         <div class="timer-display" id="timer">25:00</div>
@@ -318,9 +312,7 @@
         // Icons
         const icons = {
             play: '<polygon points="5 3 19 12 5 21 5 3"></polygon>',
-            pause: '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>',
-            focus: '<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle>',
-            coffee: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>'
+            pause: '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>'
         };
 
         // State
@@ -333,9 +325,6 @@
 
         // Elements
         const timerDisplay = document.getElementById('timer');
-        const modeTag = document.getElementById('mode-tag');
-        const modeText = document.getElementById('mode-text');
-        const modeIcon = document.getElementById('mode-icon');
         const startPauseBtn = document.getElementById('start-pause-btn');
         const startPauseText = document.getElementById('start-pause-text');
         const startPauseIcon = document.getElementById('start-pause-icon');
@@ -350,18 +339,8 @@
             const secs = secondsLeft % 60;
             timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
-            // Update mode UI
-            if (mode === 'Work') {
-                modeTag.classList.remove('break');
-                modeText.textContent = 'Work Session';
-                modeIcon.innerHTML = icons.focus;
-            } else {
-                modeTag.classList.add('break');
-                modeText.textContent = 'Break Time';
-                modeIcon.innerHTML = icons.coffee;
-            }
 
-            // Update button UI
+
             if (isRunning) {
                 startPauseBtn.className = 'btn btn-pause';
                 startPauseText.textContent = 'Pause';
@@ -395,10 +374,11 @@
                 osc.stop(start + duration);
             }
 
-            // A pleasant three-note sequence
-            playNote(523.25, now, 0.6); // C5
-            playNote(659.25, now + 0.15, 0.6); // E5
-            playNote(783.99, now + 0.3, 0.8); // G5
+
+
+            playNote(523.25, now, 0.6);
+            playNote(659.25, now + 0.15, 0.6);
+            playNote(783.99, now + 0.3, 0.8);
         }
 
 
@@ -428,7 +408,6 @@
             updateDisplay();
         }
 
-        // Event Listeners
         startPauseBtn.addEventListener('click', toggleTimer);
         resetBtn.addEventListener('click', resetTimer);
 
@@ -460,8 +439,11 @@
             });
         });
 
-        // Initialize
         updateDisplay();
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
     </script>
 </body>
 
