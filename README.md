@@ -6,7 +6,7 @@
 
 A minimal Pomodoro timer. Installable as a standalone Chrome app (PWA).
 
-<p align="center">
+<p>
   <img src="images/timer.png" alt="Timer" width="300">
   &nbsp;&nbsp;&nbsp;
   <img src="images/stats.png" alt="Session Stats" width="300">
@@ -14,7 +14,7 @@ A minimal Pomodoro timer. Installable as a standalone Chrome app (PWA).
 
 ## Prerequisites
 
-- Python 3 (pre-installed on macOS and most Linux distros)
+- Python 3
 
 ## Run
 
@@ -36,3 +36,5 @@ Then open http://localhost:3000 (or your custom port) in Chrome.
 2. Open http://localhost:3000 in Chrome
 3. Click the install icon (⊕) in the address bar
 4. The app opens in its own window and appears in your Dock/Launchpad
+5. After installation, you don't need to start the server, the service worker takes of things
+6. Stats are stored in the browser `localStorage()` clearing browser data will reset the stats
