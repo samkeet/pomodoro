@@ -1,10 +1,10 @@
-const CACHE_NAME = 'inner-peace-v3';
+const CACHE_NAME = 'inner-peace-v4';
 const ASSETS = [
   '/index.html',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/favicon.png'
+  '/images/icon-192.png',
+  '/images/icon-512.png',
+  '/images/favicon.png'
 ];
 
 self.addEventListener('install', (event) => {

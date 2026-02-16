@@ -1,6 +1,16 @@
+<p align="center">
+  <img src="images/icon-192.png" alt="Inner Peace" width="96">
+</p>
+
 # Inner Peace
 
 A minimal Pomodoro timer. Installable as a standalone Chrome app (PWA).
+
+<p align="center">
+  <img src="images/timer.png" alt="Timer" width="300">
+  &nbsp;&nbsp;&nbsp;
+  <img src="images/stats.png" alt="Session Stats" width="300">
+</p>
 
 ## Prerequisites
 
