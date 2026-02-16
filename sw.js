@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inner-peace-v2';
+const CACHE_NAME = 'inner-peace-v3';
 const ASSETS = [
   '/index.html',
   '/manifest.json',

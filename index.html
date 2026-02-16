@@ -195,9 +195,14 @@
             font-weight: 600;
         }
 
+        .setting-input-wrap {
+            position: relative;
+        }
+
         .setting-input {
             width: 100%;
             padding: 0.7rem;
+            padding-right: 2.8rem;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             border-radius: 10px;
@@ -210,6 +215,17 @@
 
         .setting-input:focus {
             border-color: var(--primary);
+        }
+
+        .setting-unit {
+            position: absolute;
+            right: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            pointer-events: none;
         }
 
         /* Animations */
@@ -232,6 +248,39 @@
 
         .timer-running .timer-display {
             animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* Break mode */
+        .break-mode .timer-display {
+            background: linear-gradient(to bottom, #4ecdc4, #2a9d8f);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .break-mode .btn-primary {
+            background: var(--secondary);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .break-mode .btn-primary:hover {
+            background: #45b7aa;
+        }
+
+        .mode-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            height: 0;
+            transition: all 0.3s ease;
+        }
+
+        .break-mode .mode-label {
+            opacity: 1;
+            height: 1.2rem;
         }
 
         .fade-in {
@@ -260,6 +309,118 @@
             z-index: 1;
             pointer-events: none;
         }
+
+        /* Hamburger Menu */
+        .hamburger-btn {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            z-index: 20;
+        }
+
+        .hamburger-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hamburger-btn svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+        }
+
+        .stats-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .stats-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .close-btn svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+
+        .stats-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            overflow-y: auto;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 
@@ -268,10 +429,32 @@
     <div class="glow" style="bottom: 10%; right: 10%;"></div>
 
     <div class="glass-card fade-in" id="app">
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Session stats">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="stats-overlay" id="stats-overlay">
+            <div class="stats-header">
+                <h2>Session Stats</h2>
+                <button class="close-btn" id="close-stats-btn" aria-label="Close stats">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="stats-body" id="stats-body"></div>
+        </div>
+
         <div class="mode-tag" id="mode-tag">
             <img src="favicon.png" alt="Inner Peace">
         </div>
 
+        <div class="mode-label" id="mode-label">Break</div>
         <div class="timer-display" id="timer">25:00</div>
 
         <div class="presets">
@@ -299,11 +482,17 @@
         <div class="settings">
             <div class="setting-group">
                 <label>Work Duration</label>
-                <input type="number" id="work-input" value="25" min="1" class="setting-input">
+                <div class="setting-input-wrap">
+                    <input type="number" id="work-input" value="25" min="1" class="setting-input">
+                    <span class="setting-unit">min</span>
+                </div>
             </div>
             <div class="setting-group">
                 <label>Break Duration</label>
-                <input type="number" id="break-input" value="5" min="1" class="setting-input">
+                <div class="setting-input-wrap">
+                    <input type="number" id="break-input" value="5" min="1" class="setting-input">
+                    <span class="setting-unit">min</span>
+                </div>
             </div>
         </div>
     </div>
@@ -315,6 +504,19 @@
             pause: '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>'
         };
 
+        // Session tracking
+        function loadSessions() {
+            try {
+                return JSON.parse(localStorage.getItem('innerPeaceSessions')) || [];
+            } catch { return []; }
+        }
+
+        function saveSession(session) {
+            const sessions = loadSessions();
+            sessions.push(session);
+            localStorage.setItem('innerPeaceSessions', JSON.stringify(sessions));
+        }
+
         // State
         let workMinutes = 25;
         let breakMinutes = 5;
@@ -322,6 +524,7 @@
         let isRunning = false;
         let mode = 'Work';
         let timerId = null;
+        let currentSession = null;
 
         // Elements
         const timerDisplay = document.getElementById('timer');
@@ -339,7 +542,11 @@
             const secs = secondsLeft % 60;
             timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
-
+            if (mode === 'Break') {
+                appCard.classList.add('break-mode');
+            } else {
+                appCard.classList.remove('break-mode');
+            }
 
             if (isRunning) {
                 startPauseBtn.className = 'btn btn-pause';
@@ -385,11 +592,33 @@
         function toggleTimer() {
             isRunning = !isRunning;
             if (isRunning) {
+                if (!currentSession) {
+                    currentSession = {
+                        type: mode === 'Work' ? 'work' : 'break',
+                        plannedSeconds: (mode === 'Work' ? workMinutes : breakMinutes) * 60,
+                        startedAt: new Date().toISOString()
+                    };
+                }
                 timerId = setInterval(() => {
                     secondsLeft--;
                     if (secondsLeft < 0) {
+                        // Save completed session
+                        if (currentSession) {
+                            saveSession({
+                                ...currentSession,
+                                actualSeconds: currentSession.plannedSeconds,
+                                status: 'completed',
+                                endedAt: new Date().toISOString()
+                            });
+                        }
                         mode = mode === 'Work' ? 'Break' : 'Work';
                         secondsLeft = (mode === 'Work' ? workMinutes : breakMinutes) * 60;
+                        // Start new session for incoming mode
+                        currentSession = {
+                            type: mode === 'Work' ? 'work' : 'break',
+                            plannedSeconds: secondsLeft,
+                            startedAt: new Date().toISOString()
+                        };
                         playNotification();
                     }
                     updateDisplay();
@@ -401,6 +630,18 @@
         }
 
         function resetTimer() {
+            if (currentSession && isRunning) {
+                const elapsed = currentSession.plannedSeconds - secondsLeft;
+                if (elapsed > 0) {
+                    saveSession({
+                        ...currentSession,
+                        actualSeconds: elapsed,
+                        status: 'stopped',
+                        endedAt: new Date().toISOString()
+                    });
+                }
+            }
+            currentSession = null;
             isRunning = false;
             clearInterval(timerId);
             mode = 'Work';
@@ -440,6 +681,58 @@
         });
 
         updateDisplay();
+
+        // Stats menu
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const statsOverlay = document.getElementById('stats-overlay');
+        const closeStatsBtn = document.getElementById('close-stats-btn');
+        const statsBody = document.getElementById('stats-body');
+
+        function formatTime(totalSeconds) {
+            if (totalSeconds == null || isNaN(totalSeconds)) return '0s';
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = Math.round(totalSeconds % 60);
+            if (h > 0) return `${h}h ${m}m`;
+            if (m > 0) return `${m}m ${s}s`;
+            return `${s}s`;
+        }
+
+        function computeStats() {
+            const sessions = loadSessions();
+            const workCompleted = sessions.filter(s => s.type === 'work' && s.status === 'completed');
+            const workStopped = sessions.filter(s => s.type === 'work' && s.status === 'stopped');
+            const breaks = sessions.filter(s => s.type === 'break');
+
+            const totalWorkTime = workCompleted.reduce((sum, s) => sum + s.actualSeconds, 0);
+            const totalBreakTime = breaks.reduce((sum, s) => sum + s.actualSeconds, 0);
+
+            return [
+                { label: 'Total Work Sessions', value: workCompleted.length },
+                { label: 'Total Work Time', value: formatTime(totalWorkTime) },
+                { label: 'Stopped Sessions', value: workStopped.length },
+                { label: 'Total Breaks', value: breaks.length },
+                { label: 'Total Break Time', value: formatTime(totalBreakTime) },
+                { label: 'Avg Session Duration', value: workCompleted.length ? formatTime(totalWorkTime / workCompleted.length) : '-' },
+                { label: 'Avg Break Duration', value: breaks.length ? formatTime(totalBreakTime / breaks.length) : '-' }
+            ];
+        }
+
+        function renderStats() {
+            const stats = computeStats();
+            statsBody.innerHTML = stats.map(s =>
+                `<div class="stat-row"><span class="stat-label">${s.label}</span><span class="stat-value">${s.value}</span></div>`
+            ).join('');
+        }
+
+        hamburgerBtn.addEventListener('click', () => {
+            renderStats();
+            statsOverlay.classList.add('open');
+        });
+
+        closeStatsBtn.addEventListener('click', () => {
+            statsOverlay.classList.remove('open');
+        });
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');

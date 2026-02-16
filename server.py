@@ -10,5 +10,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 3000
-    print(f"Serving on http://localhost:{port}")
-    http.server.HTTPServer(('', port), Handler).serve_forever()
+    server = http.server.HTTPServer(('', port), Handler)
+    print(f"Serving zen on http://localhost:{port}")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nShutting down...")
+        server.shutdown()
+        server.server_close()
